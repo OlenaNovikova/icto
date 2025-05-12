@@ -27,6 +27,7 @@
           </a-sphere>
           <!-- Тора всередині -->
           <a-torus
+            id="torus"
             radius="0.4"
             radius-tubular="0.05"
             arc="360"
@@ -34,15 +35,43 @@
             segments-tubular="32"
             color="#FF5733"
             position="0 0 0">
-            <!-- Анімація для тора -->
-            <a-animation
-              attribute="rotation"
-              to="0 360 0"
-              dur="10000"
-              repeat="indefinite"
-              easing="linear">
-            </a-animation>
+            <!-- Частинка 1 -->
+            <a-sphere
+              id="particle1"
+              radius="0.03"
+              color="#00FF00"
+              position="0.35 0 0">
+              <a-animation
+                attribute="rotation"
+                to="0 360 0"
+                dur="3000"
+                repeat="indefinite"
+                easing="linear">
+              </a-animation>
+            </a-sphere>
+            <!-- Частинка 2 -->
+            <a-sphere
+              id="particle2"
+              radius="0.03"
+              color="#00FF00"
+              position="-0.35 0 0">
+              <a-animation
+                attribute="rotation"
+                to="0 -360 0"
+                dur="3000"
+                repeat="indefinite"
+                easing="linear">
+              </a-animation>
+            </a-sphere>
           </a-torus>
+          <!-- Анімація для тора -->
+          <a-animation
+            attribute="rotation"
+            to="0 360 0"
+            dur="10000"
+            repeat="indefinite"
+            easing="linear">
+          </a-animation>
         </a-entity>
       </a-entity>
       <!-- Джерело світла -->
@@ -62,5 +91,39 @@
     <!-- Камера -->
     <a-entity camera></a-entity>
   </a-scene>
+
+  <!-- JavaScript для імітації зіткнень -->
+  <script>
+    AFRAME.registerComponent('particle-collision', {
+      init: function () {
+        this.particle1 = document.querySelector('#particle1');
+        this.particle2 = document.querySelector('#particle2');
+      },
+      tick: function () {
+        // Отримуємо позиції частинок
+        const pos1 = this.particle1.getAttribute('position');
+        const pos2 = this.particle2.getAttribute('position');
+
+        // Перетворюємо локальні координати в глобальні
+        const globalPos1 = this.particle1.object3D.getWorldPosition(new AFRAME.THREE.Vector3());
+        const globalPos2 = this.particle2.object3D.getWorldPosition(new AFRAME.THREE.Vector3());
+
+        // Обчислюємо відстань між частинками
+        const distance = globalPos1.distanceTo(globalPos2);
+
+        // Якщо відстань менша за певний поріг, змінюємо колір (імітація зіткнення)
+        if (distance < 0.2) {
+          this.particle1.setAttribute('color', '#FF0000');
+          this.particle2.setAttribute('color', '#FF0000');
+        } else {
+          this.particle1.setAttribute('color', '#00FF00');
+          this.particle2.setAttribute('color', '#00FF00');
+        }
+      }
+    });
+
+    // Додаємо компонент до сцени
+    document.querySelector('a-scene').setAttribute('particle-collision', '');
+  </script>
 </body>
 </html>
