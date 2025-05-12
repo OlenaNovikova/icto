@@ -22,13 +22,15 @@
   <div id="ar-container"></div>
 
   <script>
-    // Ініціалізація MindAR
-    const start = async () => {
-      const mindarThree = new window.MINDAR.Image({
-        container: document.querySelector("#ar-container"),
-        imageTargetSrc: "../assets/targets.mind",
-      });
-      const { renderer, scene, camera } = mindarThree;
+   // Ініціалізація MindAR
+    // Переконайтеся, що шлях до файлу targets.mind правильний відносно вашого HTML-файлу
+    const mindarThree = new window.MINDAR.IMAGE.MindARThree({
+      container: document.getElementById('ar-container'),
+      imageTargetSrc: '../assets/targets.mind' // Перевірте, чи файл існує за цим шляхом
+    });
+
+    // Отримання renderer, scene та camera від MindAR
+    const { renderer, scene, camera } = mindarThree;
 
       // Сцена
       const geometry = new THREE.SphereGeometry(0.6, 32, 32);
